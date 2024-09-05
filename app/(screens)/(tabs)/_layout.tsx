@@ -1,40 +1,35 @@
-import { Tabs } from "expo-router";
-import React from "react";
-
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
-
+import { Routes } from "@/constants/Routes";
+import { Tabs } from "expo-router";
+import React from "react";
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: true,
-        tabBarShowLabel: false,
-        headerStyle: {
-          backgroundColor: Colors.header.background,
-        },
+        headerShown: false,
+        tabBarActiveTintColor: "black",
+        tabBarInactiveTintColor: "gray",
       }}
     >
       <Tabs.Screen
-        name="index"
+        name={Routes.Home.name}
         options={{
-          title: "Home",
-          tabBarIcon: ({ focused }) => (
+          tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "cafe" : "cafe-outline"}
-              color="black"
+              color={color}
             />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name={Routes.Explore.name}
         options={{
-          title: "Explore",
-          tabBarIcon: ({ focused }) => (
+          tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "code-slash" : "code-slash-outline"}
-              color="black"
+              color={color}
             />
           ),
         }}

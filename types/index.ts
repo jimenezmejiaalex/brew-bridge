@@ -57,3 +57,56 @@ export enum MethodImage {
   CAFE_AU_LAIT = "CAFE_AU_LAIT",
   VANDOLA = "VANDOLA",
 }
+
+export interface Recipe {
+  brewMethod: BrewMethod;
+  brewMethodId: number;
+  coffeeProduct: CoffeeProduct;
+  coffeeProductId: number;
+  coffeeSize: number;
+  cupsCount: number;
+  filterType: any;
+  grindSize: string;
+  hasFilter: boolean;
+  id: number;
+  name: string;
+  notes: string;
+  ratio: number;
+  roastLevel: string;
+  shareWithCommunity: boolean;
+  steps: Step[];
+  temperature: number;
+  temperatureUnit: string;
+  waterSize: number;
+}
+
+export interface BrewMethod {
+  brewingTime: number;
+  coffeeToWaterRatio: number;
+  id: number;
+  methodImage: string;
+  name: string;
+  recommendedGrindSize: string;
+  waterTemperature: number;
+}
+
+export interface CoffeeProduct {
+  beanId: number;
+  farmId: number;
+  id: number;
+  name: string;
+  price: number;
+  roastDate: string;
+  roasterId: number;
+  shelfLife: number;
+  weight: number;
+}
+
+export interface Step {
+  amount: number;
+  duration: number;
+  id: number;
+  notes: string;
+  recipeId: number;
+  stepTypeId: number;
+}

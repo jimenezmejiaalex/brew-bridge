@@ -1,22 +1,43 @@
+import Loading from "@/components/Loading";
+import { get } from "@/lib/api";
+import { MethodImage, Recipe } from "@/types";
+import { getImage } from "@/utils/ImagesUtil";
 import { FontAwesome } from "@expo/vector-icons";
-import { useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 
-import { Text, TouchableOpacity, View, ScrollView } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView, Image } from "react-native";
 
 export default function RecipeScreen() {
   const { id, title } = useLocalSearchParams();
-  const navigation = useNavigation();
+  const [loading, setIsLoading] = useState<boolean>(true);
+  const [recipe, setRecipe] = useState<Recipe>();
 
   useEffect(() => {
-    if (title) {
-      navigation.setOptions({ title });
-    }
-  }, [title]);
+    const getRecipe = async () =>
+      get(`/recipe/${id}`)
+        .then((json) => json.data)
+        .then((data) => {
+          setRecipe(data);
+          setIsLoading(false);
+        });
+
+    getRecipe();
+  }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <View className="flex-1">
       <ScrollView className="p-4">
+        <View className="flex-1 w-full items-center justify-center mb-2">
+          <View className=" bg-white relative m-2 w-52 h-52 items-center justify-center rounded-full shadow-md border border-black">
+            <Image
+              className="flex-1 max-w-14 max-h-16 w-20 object-cover overflow-visible"
+              source={getImage(recipe?.brewMethod?.methodImage as MethodImage)}
+            />
+          </View>
+        </View>
         {/* Coffee Selection */}
         <View className="bg-dark-charcoal rounded-2xl p-4 mb-6">
           <Text className="text-lg text-[#FFFFFF] font-medium">{title}</Text>

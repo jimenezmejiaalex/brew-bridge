@@ -1,12 +1,12 @@
 import { MethodImage } from "@/types";
 
 export const IMAGES = {
-  [MethodImage.CHEMEX]: "@/assets/images/chemex.png",
-  [MethodImage.MOKA]: "@/assets/images/moka.png",
-  [MethodImage.FRENCH_PRESS]: "@/assets/images/prensa.png",
-  [MethodImage.SIPHON]: "@/assets/images/sifon-oriental.png",
-  [MethodImage.V60]: "@/assets/images/v60.png",
-  [MethodImage.AEROPRESS]: "@/assets/images/aeropress.png",
+  [MethodImage.CHEMEX]: require("@/assets/images/chemexv2.png"),
+  [MethodImage.MOKA]: require("@/assets/images/mokav2.png"),
+  [MethodImage.FRENCH_PRESS]: require("@/assets/images/prensav2.png"),
+  [MethodImage.SIPHON]: require("@/assets/images/sifonv2.png"),
+  [MethodImage.V60]: require("@/assets/images/v60v2.png"),
+  [MethodImage.AEROPRESS]: require("@/assets/images/aeropressv2.png"),
   [MethodImage.ESPRESSO]: null,
   [MethodImage.POUR_OVER]: null,
   [MethodImage.MOKA_POT]: null,
@@ -25,4 +25,4 @@ export const IMAGES = {
   [MethodImage.VANDOLA]: null,
 };
 
-export const DEFAULT_IMAGE_URL = "@/assets/images/coffee-cup.png";
+export const DEFAULT_IMAGE_URL = require("@/assets/images/coffee-cup.png");

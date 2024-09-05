@@ -6,19 +6,19 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import * as SplashScreen from "expo-splash-screen";
 import Card from "@/components/Card";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import { get } from "@/lib/api";
-import { CoffeeDto, HomeScreenProps, MethodDto, RecipeDto } from "@/types";
+import { CoffeeDto, MethodDto, RecipeDto } from "@/types";
 import { getImage } from "@/utils/ImagesUtil";
 import { DEFAULT_IMAGE_URL } from "@/constants/Images";
-import { useRouter } from "expo-router";
+import { Tabs, useNavigation, useRouter } from "expo-router";
+import { Routes } from "@/constants/Routes";
+import Screen from "@/components/Screen";
+import Loading from "@/components/Loading";
 
-SplashScreen.preventAutoHideAsync();
-
-export default function HomeScreen({ navigation }: HomeScreenProps) {
+export default function HomeScreen() {
   const [recipes, setRecipies] = useState<Array<RecipeDto>>([]);
   const [coffeeMethods, setCoffeeMethods] = useState<Array<MethodDto>>([]);
   const [coffeeProducts, setCoffeeProducts] = useState<Array<CoffeeDto>>([]);
@@ -27,47 +27,36 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
   const router = useRouter();
 
-  const fillRecipes = async () =>
-    get("/recipe/all")
-      .then((json) => json.data)
-      .then((data) => setRecipies(data as RecipeDto[]));
-
-  const fillMethods = async () =>
-    get("/coffee/method/all")
-      .then((json) => json.data)
-      .then((data) => setCoffeeMethods(data as MethodDto[]));
-
-  const fillProducts = async () =>
-    get("/coffee/product/all")
-      .then((json) => json.data)
-      .then((data) => setCoffeeProducts(data as CoffeeDto[]));
+  const navigation = useNavigation();
 
   useEffect(() => {
+    const fillRecipes = async () =>
+      get("/recipe/all")
+        .then((json) => json.data)
+        .then((data) => setRecipies(data as RecipeDto[]));
+
+    const fillMethods = async () =>
+      get("/coffee/method/all")
+        .then((json) => json.data)
+        .then((data) => setCoffeeMethods(data as MethodDto[]));
+
+    const fillProducts = async () =>
+      get("/coffee/product/all")
+        .then((json) => json.data)
+        .then((data) => setCoffeeProducts(data as CoffeeDto[]));
+
     Promise.all([fillMethods(), fillProducts(), fillRecipes()]).then(() =>
       setIsLoading(false)
     );
   }, []);
 
-  const onLayoutRootView = useCallback(async () => {
-    if (loading) {
-      await SplashScreen.hideAsync();
-    }
-  }, [loading]);
-
   if (loading) {
-    return (
-      <View
-        className="flex-1 items-center justify-center"
-        onLayout={onLayoutRootView}
-      >
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <Loading />;
   }
 
   return (
-    <SafeAreaView className="flex-1">
-      <ScrollView className="flex-1 p-4">
+    <Screen>
+      <ScrollView>
         <View className="mt-4 mb-4">
           <SearchBar />
         </View>
@@ -84,11 +73,11 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             renderItem={({ item }) => (
               <Card
                 label={item.name}
-                imageUrl={getImage(item.brewMethod.methodImage)}
+                imageSrc={getImage(item.brewMethod.methodImage)}
                 onPress={() =>
-                  router.navigate("", {
-                    id: item.id,
-                    title: item.name,
+                  router.push({
+                    pathname: `${Routes.Recipe.path}`,
+                    params: { id: item.id, title: item.name },
                   })
                 }
               />
@@ -109,11 +98,11 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             renderItem={({ item }) => (
               <Card
                 label={item.name}
-                imageUrl={getImage(item.methodImage)}
+                imageSrc={getImage(item.methodImage)}
                 onPress={() =>
-                  navigation.navigate("Recipe", {
-                    id: item.id,
-                    title: item.name,
+                  router.navigate({
+                    pathname: `${Routes.Recipe.path}`,
+                    params: { id: item.id, title: item.name },
                   })
                 }
               />
@@ -134,11 +123,11 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             renderItem={({ item }) => (
               <Card
                 label={item.name}
-                imageUrl={DEFAULT_IMAGE_URL}
+                imageSrc={DEFAULT_IMAGE_URL}
                 onPress={() =>
-                  navigation.navigate("Recipe", {
-                    id: item.id,
-                    title: item.name,
+                  router.navigate({
+                    pathname: `${Routes.Recipe.path}`,
+                    params: { id: item.id, title: item.name },
                   })
                 }
               />
@@ -147,6 +136,6 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }

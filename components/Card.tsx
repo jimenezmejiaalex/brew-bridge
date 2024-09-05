@@ -1,28 +1,30 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
-import { Image } from "expo-image";
-import { DEFAULT_IMAGE_URL } from "@/constants/Images";
-import { useAssets } from "expo-asset";
+import {
+  View,
+  Text,
+  Pressable,
+  Image,
+  ImageSourcePropType,
+} from "react-native";
 type CardProps = {
   label: string;
   onPress: () => void;
-  imageUrl: string;
+  imageSrc: ImageSourcePropType;
 };
 
-const Card = ({ label = "Dial in coffee", imageUrl, onPress }: CardProps) => {
-  const [asset, error] = useAssets([require(imageUrl)]);
-  if (asset) console.log(asset[0].localUri);
+const Card = ({ label = "Dial in coffee", imageSrc, onPress }: CardProps) => {
   return (
     <Pressable onPress={() => onPress()}>
-      <View className="bg-black m-2 items-center h-48 rounded-md">
-        <View className="bg-white m-4 w-28 h-28 items-center justify-center rounded-full">
+      <View className=" flex-1 items-center">
+        <View className=" bg-white relative m-2 w-36 h-36 items-center justify-center rounded-full shadow-md border border-black">
           <Image
-            source={(asset && asset[0].localUri) || DEFAULT_IMAGE_URL}
-            contentFit="cover"
-            placeholder={DEFAULT_IMAGE_URL}
+            className="flex-1 max-w-14 max-h-16 w-14 object-cover overflow-visible"
+            source={imageSrc}
           />
         </View>
-        <Text className="text-white text-sm text-center w-28">{label}</Text>
+        <Text className=" text-gray-600 font-semibold text-base text-center">
+          {label}
+        </Text>
       </View>
     </Pressable>
   );
