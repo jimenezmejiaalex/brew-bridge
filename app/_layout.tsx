@@ -1,37 +1,69 @@
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
 import "react-native-reanimated";
-
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import HomeStackScreen from "./HomeStack";
+import ExploreStackScreen from "./ExploreStack";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { Text } from "react-native";
+import { Stack } from "expo-router";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+  const Tab = createBottomTabNavigator();
 
   return (
-    <SafeAreaProvider>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </SafeAreaProvider>
+    // <Tab.Navigator
+    //   screenOptions={{
+    //     headerShown: false,
+    //     tabBarActiveTintColor: "black",
+    //     tabBarInactiveTintColor: "gray",
+    //   }}
+    // >
+    //   <Tab.Screen
+    //     name="HomeStack"
+    //     component={HomeStackScreen}
+    //     options={{
+    //       tabBarLabel: ({ focused }) => (
+    //         <Text
+    //           style={{
+    //             fontWeight: focused ? "bold" : "normal",
+    //             color: focused ? "black" : "gray",
+    //           }}
+    //         >
+    //           Home
+    //         </Text>
+    //       ),
+    //       tabBarIcon: ({ focused }) => (
+    //         <Feather
+    //           name="coffee"
+    //           size={24}
+    //           color={focused ? "black" : "gray"}
+    //         />
+    //       ),
+    //     }}
+    //   />
+    //   <Tab.Screen
+    //     name="ExploreStack"
+    //     component={ExploreStackScreen}
+    //     options={{
+    //       tabBarLabel: ({ focused }) => (
+    //         <Text
+    //           style={{
+    //             fontWeight: focused ? "bold" : "normal",
+    //             color: focused ? "black" : "gray",
+    //           }}
+    //         >
+    //           Explore
+    //         </Text>
+    //       ),
+    //       tabBarIcon: ({ focused }) => (
+    //         <Ionicons
+    //           name="code"
+    //           size={24}
+    //           color={focused ? "black" : "gray"}
+    //         />
+    //       ),
+    //     }}
+    //   />
+    // </Tab.Navigator>
+    <Stack></Stack>
   );
 }

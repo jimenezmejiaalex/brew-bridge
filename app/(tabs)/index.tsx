@@ -1,45 +1,69 @@
-import { View, Text, FlatList, SafeAreaView, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import * as SplashScreen from "expo-splash-screen";
 import Card from "@/components/Card";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SearchBar from "@/components/SearchBar";
+import { get } from "@/lib/api";
+import { CoffeeDto, HomeScreenProps, MethodDto, RecipeDto } from "@/types";
+import { getImage } from "@/utils/ImagesUtil";
+import { DEFAULT_IMAGE_URL } from "@/constants/Images";
+import { useRouter } from "expo-router";
 
-export default function HomeScreen() {
-  const [recipes, setRecipies] = useState<Array<{ id: string; name: string }>>(
-    []
-  );
-  const [coffeeMethods, setCoffeeMethods] = useState<
-    Array<{ id: string; name: string }>
-  >([]);
-  const [coffeeProducts, setCoffeeProducts] = useState<
-    Array<{ id: string; name: string }>
-  >([]);
+SplashScreen.preventAutoHideAsync();
+
+export default function HomeScreen({ navigation }: HomeScreenProps) {
+  const [recipes, setRecipies] = useState<Array<RecipeDto>>([]);
+  const [coffeeMethods, setCoffeeMethods] = useState<Array<MethodDto>>([]);
+  const [coffeeProducts, setCoffeeProducts] = useState<Array<CoffeeDto>>([]);
+
+  const [loading, setIsLoading] = useState<boolean>(true);
+
+  const router = useRouter();
+
+  const fillRecipes = async () =>
+    get("/recipe/all")
+      .then((json) => json.data)
+      .then((data) => setRecipies(data as RecipeDto[]));
+
+  const fillMethods = async () =>
+    get("/coffee/method/all")
+      .then((json) => json.data)
+      .then((data) => setCoffeeMethods(data as MethodDto[]));
+
+  const fillProducts = async () =>
+    get("/coffee/product/all")
+      .then((json) => json.data)
+      .then((data) => setCoffeeProducts(data as CoffeeDto[]));
 
   useEffect(() => {
-    fetch(`https://9148-201-237-248-118.ngrok-free.app/api/recipe/all`)
-      .then((response) => response.json())
-      .then((data) => {
-        const dataJson = data.data;
-        setRecipies(dataJson);
-      });
+    Promise.all([fillMethods(), fillProducts(), fillRecipes()]).then(() =>
+      setIsLoading(false)
+    );
   }, []);
 
-  useEffect(() => {
-    fetch(`https://9148-201-237-248-118.ngrok-free.app/api/coffee/method/all`)
-      .then((response) => response.json())
-      .then((data) => {
-        const dataJson = data.data;
-        setCoffeeMethods(dataJson);
-      });
-  }, []);
+  const onLayoutRootView = useCallback(async () => {
+    if (loading) {
+      await SplashScreen.hideAsync();
+    }
+  }, [loading]);
 
-  useEffect(() => {
-    fetch(`https://9148-201-237-248-118.ngrok-free.app/api/coffee/product/all`)
-      .then((response) => response.json())
-      .then((data) => {
-        const dataJson = data.data;
-        setCoffeeProducts(dataJson);
-      });
-  }, []);
+  if (loading) {
+    return (
+      <View
+        className="flex-1 items-center justify-center"
+        onLayout={onLayoutRootView}
+      >
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1">
@@ -57,7 +81,18 @@ export default function HomeScreen() {
             }}
             horizontal
             data={recipes}
-            renderItem={({ item }) => <Card label={item.name} />}
+            renderItem={({ item }) => (
+              <Card
+                label={item.name}
+                imageUrl={getImage(item.brewMethod.methodImage)}
+                onPress={() =>
+                  router.navigate("", {
+                    id: item.id,
+                    title: item.name,
+                  })
+                }
+              />
+            )}
             keyExtractor={({ id }) => id}
           />
         </View>
@@ -71,7 +106,18 @@ export default function HomeScreen() {
             }}
             horizontal
             data={coffeeMethods}
-            renderItem={({ item }) => <Card label={item.name} />}
+            renderItem={({ item }) => (
+              <Card
+                label={item.name}
+                imageUrl={getImage(item.methodImage)}
+                onPress={() =>
+                  navigation.navigate("Recipe", {
+                    id: item.id,
+                    title: item.name,
+                  })
+                }
+              />
+            )}
             keyExtractor={({ id }) => id}
           />
         </View>
@@ -85,7 +131,18 @@ export default function HomeScreen() {
             }}
             horizontal
             data={coffeeProducts}
-            renderItem={({ item }) => <Card label={item.name} />}
+            renderItem={({ item }) => (
+              <Card
+                label={item.name}
+                imageUrl={DEFAULT_IMAGE_URL}
+                onPress={() =>
+                  navigation.navigate("Recipe", {
+                    id: item.id,
+                    title: item.name,
+                  })
+                }
+              />
+            )}
             keyExtractor={({ id }) => id}
           />
         </View>

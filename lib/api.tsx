@@ -1,9 +1,9 @@
-import { API_URL } from "@/constants/api";
+import { API_URL, GET_CONFIG } from "@/constants/api";
 
-export const getRecipies = async () => {
-  const response = await fetch(`${API_URL}/recipe`);
-  console.log(response);
+export const get = async (path: string) => {
+  const response = await fetch(`${API_URL}${path}`, {
+    ...GET_CONFIG,
+  });
   const dataJson = await response.json();
-  console.log(dataJson);
   return dataJson;
 };
