@@ -14,23 +14,60 @@ export type HomeScreenProps = NativeStackScreenProps<
   "Home"
 >;
 
-export type RecipeDto = {
+export type BrewMethodDto = {
   id: string;
   name: string;
-  brewMethod: {
-    methodImage: MethodImage;
-  };
+  imageUrl: string;
 };
 
-export type MethodDto = {
+export type EquipmentDto = {
   id: string;
   name: string;
-  methodImage: MethodImage;
+  imageUrl: string;
 };
 
 export type CoffeeDto = {
   id: string;
   name: string;
+  imageUrl: string;
+};
+
+export enum RoastLevel {
+  LIGHT = "LIGHT",
+  MEDIUM = "MEDIUM",
+  DARK = "DARK",
+}
+
+export enum ProcessType {
+  WASHED = "washed",
+  NATURAL = "natural",
+  HONEY = "honey",
+}
+
+export type Traceability = {
+  region: string;
+  altitude: number;
+  variety: string;
+  process: ProcessType;
+};
+
+export enum Size {
+  NONE = "none",
+  SM = "sm",
+  BASE = "base",
+  MD = "md",
+  LG = "lg",
+  XL = "xl",
+  XXL = "2xl",
+}
+
+export type Coffee = {
+  coffeeId: string;
+  name: string;
+  description: string;
+  roasted: RoastLevel;
+  imageUrl: string;
+  traceability: Traceability;
 };
 
 export enum MethodImage {
@@ -109,4 +146,15 @@ export interface Step {
   notes: string;
   recipeId: number;
   stepTypeId: number;
+}
+
+export type BrewTime = {
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
+export enum StartingPosition {
+  TOP = "top",
+  BOTTOM = "bottom",
 }

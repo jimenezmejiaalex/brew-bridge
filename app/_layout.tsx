@@ -1,5 +1,6 @@
 import Logo from "@/components/svgs/Logo";
 import { Colors } from "@/constants/Colors";
+import { Routes } from "@/constants/Routes";
 import { Stack } from "expo-router";
 
 export default function RootLayout() {
@@ -13,6 +14,13 @@ export default function RootLayout() {
         headerTintColor: "black",
         headerTitle: () => <Logo />,
       }}
-    ></Stack>
+    >
+      <Stack.Screen
+        name={Routes.RecipeModal.name}
+        options={{
+          presentation: "modal",
+        }}
+      />
+    </Stack>
   );
 }

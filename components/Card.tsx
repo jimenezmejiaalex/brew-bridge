@@ -1,3 +1,4 @@
+import { DEFAULT_IMAGE_URL } from "@/constants/Images";
 import React from "react";
 import {
   View,
@@ -9,7 +10,7 @@ import {
 type CardProps = {
   label: string;
   onPress: () => void;
-  imageSrc: ImageSourcePropType;
+  imageSrc: string;
 };
 
 const Card = ({ label = "Dial in coffee", imageSrc, onPress }: CardProps) => {
@@ -18,11 +19,12 @@ const Card = ({ label = "Dial in coffee", imageSrc, onPress }: CardProps) => {
       <View className=" flex-1 items-center">
         <View className=" bg-white relative m-2 w-36 h-36 items-center justify-center rounded-full shadow-md border border-black">
           <Image
+            defaultSource={DEFAULT_IMAGE_URL}
             className="flex-1 max-w-14 max-h-16 w-14 object-cover overflow-visible"
-            source={imageSrc}
+            source={{ uri: imageSrc }}
           />
         </View>
-        <Text className=" text-gray-600 font-semibold text-base text-center">
+        <Text className=" text-gray-600 font-semibold text-base text-center w-32">
           {label}
         </Text>
       </View>

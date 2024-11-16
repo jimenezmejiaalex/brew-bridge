@@ -1,41 +1,56 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { PropsWithChildren, useState } from 'react';
-import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, Animated, TouchableOpacity } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Colors } from '@/constants/Colors';
+type CollapsibleProps = {
+  children: React.ReactNode;
+  title: string;
+};
 
-export function Collapsible({ children, title }: PropsWithChildren & { title: string }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const theme = useColorScheme() ?? 'light';
+export function Collapsible({ children, title }: CollapsibleProps) {
+  const [isOpen, setIsOpen] = useState(true);
+  const [animation] = useState(new Animated.Value(1));
+  const [rotateAnim] = useState(new Animated.Value(1));
+
+  const toggleCollapse = () => {
+    setIsOpen(!isOpen);
+
+    Animated.timing(animation, {
+      toValue: isOpen ? 0 : 1,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+
+    Animated.timing(rotateAnim, {
+      toValue: isOpen ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const animatedHeight = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 200],
+  });
+
+  const rotateIcon = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "90deg"],
+  });
 
   return (
-    <ThemedView>
-      <TouchableOpacity
-        style={styles.heading}
-        onPress={() => setIsOpen((value) => !value)}
-        activeOpacity={0.8}>
-        <Ionicons
-          name={isOpen ? 'chevron-down' : 'chevron-forward-outline'}
-          size={18}
-          color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
-        />
-        <ThemedText type="defaultSemiBold">{title}</ThemedText>
+    <View>
+      <TouchableOpacity onPress={toggleCollapse}>
+        <View className="flex-row items-center justify-between">
+          <Text className="text-base font-semibold text-black ">{title}</Text>
+          <Animated.View style={{ transform: [{ rotate: rotateIcon }] }}>
+            <FontAwesome name={"chevron-right"} size={16} color="#gray" />
+          </Animated.View>
+        </View>
       </TouchableOpacity>
-      {isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
-    </ThemedView>
+      <Animated.View style={{ height: animatedHeight, overflow: "hidden" }}>
+        <View className="pt-2">{children}</View>
+      </Animated.View>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  content: {
-    marginTop: 6,
-    marginLeft: 24,
-  },
-});
